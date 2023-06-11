@@ -82,7 +82,10 @@ class CalculatorViewController: UIViewController {
             }
             
             let operatorLabel: UILabel = makeUILabel(inputOperatorLabelText)
-            let operandLabel: UILabel = makeUILabel(inputNumberLabelText)
+            let operandLabel: UILabel = makeUILabel(
+                inputNumberLabelText.hasSuffix(".") ?
+                String(inputNumberLabelText.dropLast()) : inputNumberLabelText
+            )
             let inputLabelStackView = makeUIStackView()
             
             inputLabelStackView.addArrangedSubview(operatorLabel)
