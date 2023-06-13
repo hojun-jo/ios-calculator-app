@@ -20,7 +20,7 @@ class CalculatorViewController: UIViewController {
         let numberFormatter = NumberFormatter()
         
         numberFormatter.numberStyle = .decimal
-        numberFormatter.maximumFractionDigits = 20
+        numberFormatter.maximumFractionDigits = 15
         
         return numberFormatter
     }()
@@ -192,7 +192,6 @@ class CalculatorViewController: UIViewController {
         label.text = text
         label.textColor = .white
         label.font = label.font.withSize(20)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }
@@ -200,10 +199,7 @@ class CalculatorViewController: UIViewController {
     private func makeUIStackView() -> UIStackView {
         let stackView = UIStackView()
         
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .fill
         stackView.spacing = 8
         
         return stackView
