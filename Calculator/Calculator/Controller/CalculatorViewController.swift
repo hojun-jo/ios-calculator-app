@@ -16,6 +16,14 @@ class CalculatorViewController: UIViewController {
     
     private var formulaString = ""
     private var operationReady = true
+    private let numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.maximumFractionDigits = 20
+        
+        return numberFormatter
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,10 +41,13 @@ class CalculatorViewController: UIViewController {
         
         if operationReady {
             if inputNumberLabelText == "0" {
-                inputNumberLabel.text? = labelText
+                inputNumberLabel.text = labelText
             } else if inputNumberLabelText.count < 20 {
                 let newLabelText = inputNumberLabelText + labelText
-                inputNumberLabel.text? = makeNumberFormat(for: newLabelText.replacingOccurrences(of: ",", with: ""))
+                guard let newLabelTextToDouble = Double(newLabelText.replacingOccurrences(of: ",", with: "")) else {
+                    return
+                }
+                inputNumberLabel.text = numberFormatter.string(from: newLabelTextToDouble as NSNumber)
             }
         }
     }
@@ -75,7 +86,7 @@ class CalculatorViewController: UIViewController {
             formulaString += inputOperatorLabelText + inputNumberLabelText.replacingOccurrences(of: ",", with: "")
             allInputScrollView.scrollToBottom()
         } else if inputNumberLabelText == "0" {
-            inputOperatorLabel.text? = labelText
+            inputOperatorLabel.text = labelText
         } else {
             if allInputStackView.subviews.isEmpty {
                 inputOperatorLabelText = ""
@@ -94,7 +105,7 @@ class CalculatorViewController: UIViewController {
             
             formulaString += inputOperatorLabelText + inputNumberLabelText.replacingOccurrences(of: ",", with: "")
             resetInputNumberLabel()
-            inputOperatorLabel.text? = labelText
+            inputOperatorLabel.text = labelText
             allInputScrollView.scrollToBottom()
         }
     }
@@ -107,7 +118,8 @@ class CalculatorViewController: UIViewController {
                 var formula = try ExpressionParser.parse(from: formulaString)
                 let result = try formula.result()
                 
-                inputNumberLabel.text = makeNumberFormat(for: String(result))
+                inputNumberLabel.text = numberFormatter.string(from: result as NSNumber)
+//                inputNumberLabel.text = makeNumberFormat(for: String(result))
                 operationReady = false
                 
                 resetInputOperatorLabel()
@@ -196,15 +208,6 @@ class CalculatorViewController: UIViewController {
         stackView.spacing = 8
         
         return stackView
-    }
-    
-    private func makeNumberFormat(for input: String) -> String {
-        let numberFormatter = NumberFormatter()
-        
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.maximumFractionDigits = 20
-        
-        return numberFormatter.string(for: Double(input)) ?? "0"
     }
 }
 
