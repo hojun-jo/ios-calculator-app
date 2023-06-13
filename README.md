@@ -17,7 +17,6 @@
 3. [다이어그램](#💎-다이어그램)
 4. [트러블 슈팅](#🚀-트러블-슈팅)
 5. [참고 링크](#📚-참고-링크)
-6. [회고](#🧭-회고)
 
 </br>
 
@@ -32,11 +31,22 @@
 |2023-06-06|- String extension의 split에서 forEach를 map으로 변경<br>- 음수 계산을 위해 "-"연산자를 이모지(minus sign)로 변경<br>- ExpressionParser의 componentsByOperators내의 for문을 forEach로 변경<br>- ExpressionParser의 parse내의 for문을 forEach로 변경<br>- Formula의 result에 0으로 나눌 경우 에러를 던지도록 조건문 추가|
 |2023-06-07|- Formula의 result 수행 로직 수정|
 |2023-06-08|- ExpressionParser의 parse에서 operatorsQueue를 만드는 로직 수정<br>- Formula의 result에서 0으로 나눈 경우의 조건 수정|
+|2023-06-09|- resetInputNumberLabel 메서드 추가<br>- resetInputOperatorLabel 메서드 추가<br>- resetAllInputStackView 메서드 추가<br>- resetFormulaString 메서드 추가<br>- tapNumpad 메서드 추가<br>- tapOperator 메서드 추가<br>- tapChangeSign 메서드 추가<br>- tapClearEntry 메서드 추가<br>- tapAllClear 메서드 추가<br>- tapZero 메서드 추가<br>- tapPoint 메서드 추가<br>- tapEqual 메서드 추가<br>- scrollToBottom 메서드 추가|
+|2023-06-10|- makeNumberFormat 메서드 추가<br>- tapNumpad 수정<br>- tapOperator 수정|
+
+
+</br>
+
+# 🖥️ 실행 화면
+![run1](https://github.com/hojun-jo/ios-calculator-app/assets/86751964/f9072eae-34db-4fd6-b6ed-c0286ef864ad)
+![run2](https://github.com/hojun-jo/ios-calculator-app/assets/86751964/528408ef-2641-4e05-8c41-cd2b0d673d71)
+![run3](https://github.com/hojun-jo/ios-calculator-app/assets/86751964/0da77300-1014-4442-bcb2-8bbc8a158669)
+
 
 </br>
 
 # 💎 다이어그램
-![classdiagram](https://github.com/hojun-jo/ios-calculator-app/assets/86751964/1017ef18-5d7b-49d3-8c02-c00ca445e74f)
+![classdiagram](https://github.com/hojun-jo/ios-calculator-app/assets/86751964/17adf85d-20e8-48d6-a707-70880f2a70ce)
 
 
 
@@ -270,12 +280,47 @@ static func parse(from input: String) throws -> Formula {
 }
 ```
 
+## 4️⃣ 레이아웃 업데이트
+
+### 🔍 문제점
+계산기에 새로운 숫자를 입력하면 스크롤이 맨 아래로 내려가야 하는데 한 칸 위까지만 내려가는 문제가 있었습니다.
+
+```swift
+extension UIScrollView {
+    func scrollToBottom() {
+        let bottomOffset = CGPoint(x: 0, y: contentSize.height - bounds.size.height)
+        
+        setContentOffset(bottomOffset, animated: true)
+    }
+}
+
+```
+
+### ⚒️ 해결방안
+레이아웃을 업데이트하기 위한 방법을 모르고 있었습니다. 다음 업데이트 사이클에 업데이트하려면 `setNeedsLayout()`을 사용할 수 있고, 즉시 업데이트하려면 `layoutIfNeeded()`를 사용할 수 있습니다. 이 경우에서는 즉이 업데이트가 필요하기 때문에 `layoutIfNeeded()`를 사용했습니다.
+```swift
+extension UIScrollView {
+    func scrollToBottom() {
+        self.layoutIfNeeded()
+        
+        let bottomOffset = CGPoint(x: 0, y: contentSize.height - bounds.size.height)
+        
+        setContentOffset(bottomOffset, animated: true)
+    }
+}
+
+```
+
+
 </br>
 
 # 📚 참고 링크
 
 * [🍎 Apple Docs - Any Type](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/types/#Any-Type)
 * [🍎 Apple Docs - Generics](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/generics/)
+* [🍎 Apple Docs - layoutSubviews()](https://developer.apple.com/documentation/uikit/uiview/1622482-layoutsubviews)
+* [🍎 Apple Docs - setNeedsLayout()](https://developer.apple.com/documentation/uikit/uiview/1622601-setneedslayout)
+* [🍎 Apple Docs - layoutIfNeeded()](https://developer.apple.com/documentation/uikit/uiview/1622507-layoutifneeded)
 * [🌐 stackoverflow - Type any Protocol cannot conform to Protocol](https://stackoverflow.com/questions/75062360/type-any-protocol-cannot-conform-to-protocol)
 
 </br>
