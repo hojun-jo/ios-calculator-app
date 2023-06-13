@@ -119,7 +119,6 @@ class CalculatorViewController: UIViewController {
                 let result = try formula.result()
                 
                 inputNumberLabel.text = numberFormatter.string(from: result as NSNumber)
-//                inputNumberLabel.text = makeNumberFormat(for: String(result))
                 operationReady = false
                 
                 resetInputOperatorLabel()
